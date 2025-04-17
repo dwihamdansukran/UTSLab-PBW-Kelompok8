@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login / Register - ToDo List</title>
+  <link rel="shortcut icon" type="image/png" href="assets/favicon.png"/>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: linear-gradient(to bottom right, #9a9a9b, #0c3569);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .auth-container {
+      width: 100%;
+      max-width: 600px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: white;
+      animation: fadeIn 0.4s ease-in-out;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      color: #ffffff;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    input {
+      padding: 0.8rem;
+      background-color: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    input::placeholder {
+      color: rgba(255,255,255,0.6);
+    }
+
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 8px rgba(255,255,255,0.3);
+      transform: scale(1.02);
+    }
+
+    button {
+      background: linear-gradient(to right, #335c74, #2b3247);
+      border: none;
+      color: white;
+      font-weight: bold;
+      padding: 0.8rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(39, 40, 66, 0.4);
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 15px rgba(41, 54, 96, 0.6);
+    }
+
+    .toggle-link {
+      margin-top: 1rem;
+      text-align: center;
+      display: block;
+      color: #ede557;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .toggle-link:hover {
+      text-decoration: underline;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .password-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .password-wrapper input {
+      width: 100%;
+      padding-right: 2.5rem;
+      box-sizing: border-box;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 0.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+    }
+
+    .toggle-password svg {
+      width: 100%;
+      height: 100%;
+      fill: rgba(255,255,255,0.6);
+    }
+
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border: 2px solid #ccc;
+      border-radius: 1rem;
+      padding: 1.5rem 2rem;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      z-index: 1000;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .popup.success { border-color: #2ecc71; color: #2ecc71; }
+    .popup.error { border-color: #e74c3c; color: #e74c3c; }
+
+    .popup.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    <h2 id="form-title">Masuk ke Akun</h2>
+
+    <!-- Login Form -->
+    <form id="loginForm">
+      <input type="email" name="email" placeholder="Email" required />
+      <div class="password-wrapper">
+        <input type="password" name="password" placeholder="Kata Sandi" required />
+        <span class="toggle-password" onclick="togglePassword(this)">
+          <svg xmlns="http://www.w3.org/2000/svg" class="eye-icon" viewBox="0 0 24 24">
+            <path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+          </svg>
+        </span>
+      </div>
+      <button type="submit">Masuk</button>
+    </form>
+
+    <!-- Register Form -->
+    <form id="registerForm" class="hidden">
+      <input type="text" name="fullName" placeholder="Nama Lengkap" required />
+      <input type="email" name="email" placeholder="Email" required />
+      <div class="password-wrapper">
+        <input type="password" name="password" placeholder="Kata Sandi" required />
+        <span class="toggle-password" onclick="togglePassword(this)">
+          <svg xmlns="http://www.w3.org/2000/svg" class="eye-icon" viewBox="0 0 24 24">
+            <path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+          </svg>
+        </span>
+      </div>
+      <button type="submit">Daftar</button>
+    </form>
+
+    <a href="#register" id="linkToRegister" class="toggle-link">Belum punya akun? Daftar di sini</a>
+    <a href="#login" id="linkToLogin" class="toggle-link hidden">Sudah punya akun? Masuk di sini</a>
+  </div>
+
+  <!-- Popup -->
+  <div id="popup" class="popup"></div>
+
+  <script>
+    // Cek apakah pengguna sudah login, jika ya, langsung arahkan ke index.html
+    document.addEventListener('DOMContentLoaded', function() {
+      const token = localStorage.getItem('token');
+      
+      if (token) {
+        console.log("Pengguna sudah login, mengarahkan ke index.html");
+        window.location.href = 'index.html';
+      }
+    });
+
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const formTitle = document.getElementById('form-title');
+    const linkToRegister = document.getElementById('linkToRegister');
+    const linkToLogin = document.getElementById('linkToLogin');
+    const popup = document.getElementById('popup');
+
+    function showFormBasedOnHash() {
+      const hash = window.location.hash || '#login';
+      const isLogin = hash === '#login';
+
+      loginForm.classList.toggle('hidden', !isLogin);
+      registerForm.classList.toggle('hidden', isLogin);
+      formTitle.textContent = isLogin ? 'Masuk ke Akun' : 'Daftar Akun Baru';
+      linkToRegister.classList.toggle('hidden', !isLogin);
+      linkToLogin.classList.toggle('hidden', isLogin);
+
+      if (!isLogin) {
+        registerForm.reset();
+      }
+    }
+
+    window.addEventListener('hashchange', showFormBasedOnHash);
+    window.addEventListener('load', showFormBasedOnHash);
+
+    function togglePassword(element) {
+      const input = element.previousElementSibling;
+      const svg = element.querySelector('svg');
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+
+      svg.innerHTML = isPassword
+        ? '<path d="M1 1l22 22M9.9 4.2a10.5 10.5 0 012.1-.2c7 0 11 7 11 7a18.3 18.3 0 01-4.2 5.4M4.3 4.3A17.5 17.5 0 001 12s4 7 11 7c2.3 0 4.4-.6 6.2-1.6M10.6 10.6a3 3 0 004.2 4.2"/>'
+        : '<path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>';
+    }
+
+    function showPopup(message, isSuccess = true) {
+      popup.textContent = message;
+      popup.className = 'popup ' + (isSuccess ? 'success' : 'error') + ' show';
+      setTimeout(() => {
+        popup.classList.remove('show');
+      }, 3000);
+    }
+
+    function checkLocalStorage() {
+      console.log("=== localStorage Content ===");
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        console.log(`${key}: ${localStorage.getItem(key)}`);
+      }
+      console.log("==========================");
+    }
+
+    // Panggil fungsi ini saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log("Halaman login dimuat");
+      checkLocalStorage();
+    });
+
+    // Modifikasi event listener form login
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = loginForm.email.value;
+      const password = loginForm.password.value;
+      
+      try {
+        console.log("Mencoba login dengan:", email);
+            
+        const res = await fetch('https://api-todo-list-pbw.vercel.app/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+        console.log("Respons lengkap dari server:", data);
+        
+        // Cek struktur respons yang lebih fleksibel
+        let token = null;
+        let userId = null;
+        
+        if (data.token) {
+          token = data.token;
+        } else if (data.data && data.data.token) {
+          token = data.data.token;
+        } else if (data.access_token) {
+          token = data.access_token;
+        }
+        
+        if (data.user && data.user._id) {
+          userId = data.user._id;
+        } else if (data.data && data.data.user && data.data.user._id) {
+          userId = data.data.user._id;
+        } else if (data.userId) {
+          userId = data.userId;
+        }
+        
+        if (token) {
+          console.log("Token ditemukan:", token);
+          localStorage.setItem('token', token);
+          
+          if (userId) {
+            localStorage.setItem('userId', userId);
+          }
+          
+          showPopup("Login berhasil! Mengarahkan ke todo list...", true);
+          
+          // Arahkan ke halaman index
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1500);
+        } else {
+          console.warn("Tidak ada token dalam respons");
+          showPopup("Login gagal: " + (data.message || "Token tidak ditemukan dalam respons."), false);
+        }
+      } catch (error) {
+        console.error("Error saat login:", error);
+        showPopup("Terjadi kesalahan saat login. Silakan coba lagi.", false);
+      }
+    });
+    
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fullName = registerForm.fullName.value;
+      const email = registerForm.email.value;
+      const password = registerForm.password.value;
+
+      try {
+        const res = await fetch('https://api-todo-list-pbw.vercel.app/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fullName, email, password })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          showPopup("Registrasi berhasil! Silakan login.", true);
+          window.location.hash = '#login';
+        } else {
+          showPopup("Registrasi gagal: " + (data.message || "Silakan coba lagi."), false);
+        }
+      } catch (error) {
+        console.error("Error saat registrasi:", error);
+        showPopup("Terjadi kesalahan saat registrasi. Silakan coba lagi.", false);
+      }
+    });
+  </script>
+
+</body>
+</html>
